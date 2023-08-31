@@ -2257,7 +2257,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 711719878}
         m_TargetAssemblyTypeName: Menu, Assembly-CSharp
-        m_MethodName: OnCreateRoomButton
+        m_MethodName: OnJoinRoomButton
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 1761749089}
