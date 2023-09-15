@@ -22,7 +22,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IPunObservable
     // Start is called before the first frame update
     void Start()
     {
-        
+        rig = this.gameObject.GetComponent<Rigidbody>();
     }
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
@@ -59,43 +59,46 @@ public class PlayerController : MonoBehaviourPunCallbacks, IPunObservable
     }
     void Move()
     {
-        //float x = Input.GetAxis("Horizontal") * moveSpeed;
-        float rot = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical") * moveSpeed;
-        float rotStateX = 0;
-        float rotStateZ = 0;
-        rig.rotation = transform.rotation;
-        switch (rig.rotation.eulerAngles.y % 360)
+        if (photonView.IsMine)
         {
-            case 0:
-                rotStateX = 0;
-                rotStateZ = 1;
-                break;
-            case 90:
-                rotStateX = 1;
-                rotStateZ = 0;
-                break;
-            case 180:
-                rotStateX = 0;
-                rotStateZ = -1;
-                break;
-            case 270:
-                rotStateX = -1;
-                rotStateZ = 0;
-                break;
+            //float x = Input.GetAxis("Horizontal") * moveSpeed;
+            float rot = Input.GetAxis("Horizontal");
+            float z = Input.GetAxis("Vertical") * moveSpeed;
+            float rotStateX = 0;
+            float rotStateZ = 0;
+            this.rig.rotation = this.transform.rotation;
+            switch (rig.rotation.eulerAngles.y % 360)
+            {
+                case 0:
+                    rotStateX = 0;
+                    rotStateZ = 1;
+                    break;
+                case 90:
+                    rotStateX = 1;
+                    rotStateZ = 0;
+                    break;
+                case 180:
+                    rotStateX = 0;
+                    rotStateZ = -1;
+                    break;
+                case 270:
+                    rotStateX = -1;
+                    rotStateZ = 0;
+                    break;
 
-            default:
-                break;
-        }
-        rig.isKinematic = false;
-        rig.velocity = new Vector3(z * rotStateX, rig.velocity.y, z * rotStateZ);
-        if (Input.GetKeyDown("a"))
-        {
-            transform.Rotate(0, -90, 0);
-        }
-        if (Input.GetKeyDown("d"))
-        {
-            transform.Rotate(0, 90, 0);
+                default:
+                    break;
+            }
+            this.rig.isKinematic = false;
+            this.rig.velocity = new Vector3(z * rotStateX, rig.velocity.y, z * rotStateZ);
+            if (Input.GetKeyDown("a"))
+            {
+                this.transform.Rotate(0, -90, 0);
+            }
+            if (Input.GetKeyDown("d"))
+            {
+                this.transform.Rotate(0, 90, 0);
+            }
         }
     }
     void TryJump()
@@ -113,11 +116,11 @@ public class PlayerController : MonoBehaviourPunCallbacks, IPunObservable
         GameManager.instance.players[id - 1] = this;
         // give the first player the hat
         if(id == 1)
- GameManager.instance.GiveHat(id, true);
+            GameManager.instance.GiveHat(id, true);
 
         // if this isn't our local player, disable physics as that's
         // controlled by the user and synced to all other clients
-        if (photonView.IsMine)
+        if (!photonView.IsMine)
             rig.isKinematic = true;
     }
     // sets the player's hat active or not
