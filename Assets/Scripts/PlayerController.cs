@@ -22,7 +22,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IPunObservable
     // Start is called before the first frame update
     void Start()
     {
-        rig = this.gameObject.GetComponent<Rigidbody>();
+
     }
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
